@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RestWithASPNETUdemy.Model
 {
@@ -19,5 +20,8 @@ namespace RestWithASPNETUdemy.Model
 
         [Column("gender")]
         public string Gender { get; set; }
+
+        [Column("curriculo_pdf", TypeName = "LONGBLOB")]
+        public byte[] CurriculoPdf { get; set; }
     }
 }

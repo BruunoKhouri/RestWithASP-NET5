@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RestWithASPNETUdemy.Model;
 using RestWithASPNETUdemy.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,13 +43,14 @@ namespace RestWithASPNETUdemy.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Person person) 
+        public IActionResult Post([FromBody] Person person)
         {
 
             if (person == null) return BadRequest();
             return Ok(_personService.Create(person));
         }
 
+       
         [HttpPut]
         public IActionResult Put([FromBody] Person person)
         {
@@ -63,6 +67,41 @@ namespace RestWithASPNETUdemy.Controllers
             return NoContent();
         }
 
+        [HttpPost("{id}/curriculo-pdf")]
+        public IActionResult UploadCurriculoPdf(long id, [FromForm] IFormFile curriculoPdf)
+        {
+            try
+            {
+                if (curriculoPdf == null || curriculoPdf.Length == 0)
+                {
+                    return BadRequest("No file uploaded.");
+                }
+
+                _personService.UploadCurriculoPdf(id, curriculoPdf);
+
+
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
+
+        }
+
+
+        [HttpGet("{id}/curriculo-pdf")]
+        public IActionResult GetCurriculoPdf(long id)
+        {
+            var curriculoPdfBytes = _personService.GetCurriculoPdf(id);
+
+            if (curriculoPdfBytes == null)
+            {
+                return NotFound("Curriculo PDF not found");
+            }
+
+            return File(curriculoPdfBytes, "application/pdf", "Curriculo.pdf");
+        }
 
     }
 }

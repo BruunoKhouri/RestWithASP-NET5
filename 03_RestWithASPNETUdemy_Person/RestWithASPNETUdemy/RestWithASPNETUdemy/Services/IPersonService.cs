@@ -1,4 +1,6 @@
-﻿using RestWithASPNETUdemy.Model;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using RestWithASPNETUdemy.Model;
 using System.Collections.Generic;
 
 namespace RestWithASPNETUdemy.Services
@@ -13,7 +15,11 @@ namespace RestWithASPNETUdemy.Services
 
         Person FindById(long id);
 
-        List<Person> FindAll();       
+        List<Person> FindAll();
+
+        void UploadCurriculoPdf(long personId, IFormFile curriculoPdf);
+
+        byte[] GetCurriculoPdf(long id);
 
     }
 }
